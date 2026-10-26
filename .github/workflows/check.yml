@@ -1,0 +1,68 @@
+name: Havnsø Saunagus overvågning
+
+on:
+  schedule:
+    - cron: '7,22,37,52 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gus-monitor
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Kontroller dansk tid
+        id: timecheck
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          HOUR=$(TZ=Europe/Copenhagen date +%H)
+          echo "Dansk klokkeslæt: $HOUR"
+
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          elif [ "$HOUR" -ge 1 ] && [ "$HOUR" -lt 6 ]; then
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "Natpause - ingen kontrol"
+          else
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Hent projekt
+        if: steps.timecheck.outputs.run == 'true'
+        uses: actions/checkout@v4
+
+      - name: Installer Python
+        if: steps.timecheck.outputs.run == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Installer pakker
+        if: steps.timecheck.outputs.run == 'true'
+        run: pip install requests beautifulsoup4
+
+      - name: Kontroller arrangementer
+        if: steps.timecheck.outputs.run == 'true'
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: python check_gus.py
+
+      - name: Gem arrangementernes status
+        if: steps.timecheck.outputs.run == 'true'
+        run: |
+          if [ -f gus_state.json ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add gus_state.json
+            if ! git diff --cached --quiet; then
+              git commit -m "Opdater gus-status"
+              git push
+            fi
+          fi
