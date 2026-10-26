@@ -1,0 +1,18 @@
+name: Hold saunagus-overvaagning aktiv
+
+on:
+  schedule:
+    - cron: '23 12 * * 1'
+  workflow_dispatch:
+
+permissions:
+  actions: write
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hold workflow aktivt
+        uses: WaterLemons2k/scheduled-workflow-activity-action@v2
+        with:
+          workflows: check.yml
