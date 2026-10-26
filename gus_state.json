@@ -2,31 +2,37 @@
   "https://havnsoe.com/events/338-779-774-718-787-476-827-417-882-888-318-830-772-582-536-931-546-927/": {
     "title": "Nuka’s Velvære gus 28.10.2026 Udsolgt",
     "url": "https://havnsoe.com/events/338-779-774-718-787-476-827-417-882-888-318-830-772-582-536-931-546-927/",
-    "available": false
+    "available": false,
+    "date": "2026-10-28"
   },
   "https://havnsoe.com/events/968-844-991-336-135-207-757-885-935-470-718-720-795-796-833-997-487/": {
     "title": "Solnedgangs Gus 29.10.2026 m. Pandekager Udsolgt",
     "url": "https://havnsoe.com/events/968-844-991-336-135-207-757-885-935-470-718-720-795-796-833-997-487/",
-    "available": false
+    "available": false,
+    "date": "2026-10-29"
   },
   "https://havnsoe.com/events/338-779-748-655-183-900-210-284-253/": {
     "title": "Saunagus 30.10.2026 Ned i Tempo Sidste Par Billetter",
     "url": "https://havnsoe.com/events/338-779-748-655-183-900-210-284-253/",
-    "available": true
+    "available": true,
+    "date": "2026-10-30"
   },
   "https://havnsoe.com/events/576-787-475-790-337-886-474-212-257/": {
     "title": "Fyraftensgus 30.10.2026 Sidste Par Billetter",
     "url": "https://havnsoe.com/events/576-787-475-790-337-886-474-212-257/",
-    "available": true
+    "available": true,
+    "date": "2026-10-30"
   },
   "https://havnsoe.com/events/338-779-774-718-787-703-242-223-453-572-159/": {
     "title": "Saunagus 31.10.2026 Udsolgt",
     "url": "https://havnsoe.com/events/338-779-774-718-787-703-242-223-453-572-159/",
-    "available": false
+    "available": false,
+    "date": "2026-10-31"
   },
   "https://havnsoe.com/events/godnat-nytaars-gus-m-pandekager-30-12-2025-479-806-823-336-482/": {
     "title": "Godnat Gus 31.10.2026",
     "url": "https://havnsoe.com/events/godnat-nytaars-gus-m-pandekager-30-12-2025-479-806-823-336-482/",
-    "available": true
+    "available": true,
+    "date": "2026-10-31"
   }
 }
