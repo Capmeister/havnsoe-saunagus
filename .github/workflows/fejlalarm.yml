@@ -3,7 +3,7 @@ name: Fejlalarm for saunagus
 on:
   workflow_run:
     workflows:
-      - Tjek saunagus
+      - Havnsø Saunagus overvågning
     types:
       - completed
 
