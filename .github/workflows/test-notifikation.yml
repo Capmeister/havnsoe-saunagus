@@ -1,0 +1,25 @@
+name: Test ntfy-notifikation
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send test til iPhone
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: |
+          if [ -z "$NTFY_TOPIC" ]; then
+            echo "Fejl: NTFY_TOPIC mangler"
+            exit 1
+          fi
+
+          curl --fail-with-body \
+            --retry 2 \
+            -H "Title: Havnsø Saunagus" \
+            -H "Tags: white_check_mark" \
+            -H "Click: https://havnsoe.com/arrangementer/" \
+            -d "TEST: GitHub kan sende notifikationer til din iPhone!" \
+            "https://ntfy.sh/$NTFY_TOPIC"
