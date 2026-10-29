@@ -1,10 +1,4 @@
 {
-  "https://havnsoe.com/events/968-844-991-336-135-207-757-885-935-470-718-720-795-796-833-997-487/": {
-    "title": "Solnedgangs Gus 29.10.2026 m. Pandekager",
-    "url": "https://havnsoe.com/events/968-844-991-336-135-207-757-885-935-470-718-720-795-796-833-997-487/",
-    "available": false,
-    "date": "2026-10-29"
-  },
   "https://havnsoe.com/events/338-779-748-655-183-900-210-284-253/": {
     "title": "Saunagus 30.10.2026 Ned i Tempo Udsolgt",
     "url": "https://havnsoe.com/events/338-779-748-655-183-900-210-284-253/",
@@ -34,5 +28,11 @@
     "url": "https://havnsoe.com/events/pop-up-gus-12-01-2026-373-363-214-986-785-300/",
     "available": false,
     "date": "2026-11-01"
+  },
+  "https://havnsoe.com/events/338-779-774-718-787-476-827-417-882-888-318-830-772-582-536-931-546-927-640/": {
+    "title": "Nuka’s Velvære gus 04.11.2026",
+    "url": "https://havnsoe.com/events/338-779-774-718-787-476-827-417-882-888-318-830-772-582-536-931-546-927-640/",
+    "available": true,
+    "date": "2026-11-04"
   }
 }
