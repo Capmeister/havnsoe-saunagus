@@ -1,16 +1,4 @@
 {
-  "https://havnsoe.com/events/338-779-748-655-183-900-210-284-253/": {
-    "title": "Saunagus 30.10.2026 Ned i Tempo",
-    "url": "https://havnsoe.com/events/338-779-748-655-183-900-210-284-253/",
-    "available": false,
-    "date": "2026-10-30"
-  },
-  "https://havnsoe.com/events/576-787-475-790-337-886-474-212-257/": {
-    "title": "Fyraftensgus 30.10.2026",
-    "url": "https://havnsoe.com/events/576-787-475-790-337-886-474-212-257/",
-    "available": false,
-    "date": "2026-10-30"
-  },
   "https://havnsoe.com/events/338-779-774-718-787-703-242-223-453-572-159/": {
     "title": "Saunagus 31.10.2026 Udsolgt",
     "url": "https://havnsoe.com/events/338-779-774-718-787-703-242-223-453-572-159/",
@@ -34,5 +22,17 @@
     "url": "https://havnsoe.com/events/338-779-774-718-787-476-827-417-882-888-318-830-772-582-536-931-546-927-640/",
     "available": true,
     "date": "2026-11-04"
+  },
+  "https://havnsoe.com/events/faelles-fyraften-06-02-2026-735-612-379-288-404-316-215/": {
+    "title": "Fælles Fyraften 06.11.2026 Udsolgt",
+    "url": "https://havnsoe.com/events/faelles-fyraften-06-02-2026-735-612-379-288-404-316-215/",
+    "available": false,
+    "date": "2026-11-06"
+  },
+  "https://havnsoe.com/events/338-779-774-718-787-703-242-223-453-572-159-691/": {
+    "title": "Saunagus 07.11.2026 Udsolgt",
+    "url": "https://havnsoe.com/events/338-779-774-718-787-703-242-223-453-572-159-691/",
+    "available": false,
+    "date": "2026-11-07"
   }
 }
