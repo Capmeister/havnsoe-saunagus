@@ -1,16 +1,4 @@
 {
-  "https://havnsoe.com/events/338-779-774-718-787-703-242-223-453-572-159/": {
-    "title": "Saunagus 31.10.2026",
-    "url": "https://havnsoe.com/events/338-779-774-718-787-703-242-223-453-572-159/",
-    "available": false,
-    "date": "2026-10-31"
-  },
-  "https://havnsoe.com/events/godnat-nytaars-gus-m-pandekager-30-12-2025-479-806-823-336-482/": {
-    "title": "Godnat Gus 31.10.2026",
-    "url": "https://havnsoe.com/events/godnat-nytaars-gus-m-pandekager-30-12-2025-479-806-823-336-482/",
-    "available": false,
-    "date": "2026-10-31"
-  },
   "https://havnsoe.com/events/pop-up-gus-12-01-2026-373-363-214-986-785-300/": {
     "title": "Gustjeneste 01.11.2026 Udsolgt",
     "url": "https://havnsoe.com/events/pop-up-gus-12-01-2026-373-363-214-986-785-300/",
@@ -34,5 +22,17 @@
     "url": "https://havnsoe.com/events/338-779-774-718-787-703-242-223-453-572-159-691/",
     "available": false,
     "date": "2026-11-07"
+  },
+  "https://havnsoe.com/events/968-844-991-336-394-911-360/": {
+    "title": "Hyggegus m. Pandekager 08.11.2026 Hold 1 Udsolgt",
+    "url": "https://havnsoe.com/events/968-844-991-336-394-911-360/",
+    "available": false,
+    "date": "2026-11-08"
+  },
+  "https://havnsoe.com/events/388-706-919-992-599-240-820/": {
+    "title": "Hyggegus m. Pandekager 08.11.2026 Hold 2 Udsolgt",
+    "url": "https://havnsoe.com/events/388-706-919-992-599-240-820/",
+    "available": false,
+    "date": "2026-11-08"
   }
 }
