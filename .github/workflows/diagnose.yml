@@ -1,4 +1,4 @@
-name: Undersoeg Havnsø arrangementer
+name: Undersoeg alle Havnsø arrangementer
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
 jobs:
   diagnose:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 10
 
     steps:
       - name: Installer Playwright
@@ -14,10 +14,11 @@ jobs:
           python -m pip install playwright
           python -m playwright install --with-deps chromium
 
-      - name: Undersoeg MEC JavaScript
+      - name: Hent alle arrangementer
         run: |
           python - <<'PY'
           from playwright.sync_api import sync_playwright
+          import time
 
           URL = "https://havnsoe.com/arrangementer/"
 
@@ -28,75 +29,164 @@ jobs:
                   locale="da-DK"
               )
 
-              def log_request(request):
-                  if request.resource_type in ("xhr", "fetch"):
-                      print("XHR REQUEST:", request.method,
-                            request.url[:200], flush=True)
-                      if request.method == "POST":
-                          data = request.post_data or ""
-                          print("POST ACTION:",
-                                data[:300].split("&")[0], flush=True)
+              page.on(
+                  "pageerror",
+                  lambda e: print(
+                      "JS FEJL:", str(e)[:300], flush=True
+                  )
+              )
 
-              def log_response(response):
-                  if response.request.resource_type in ("xhr", "fetch"):
-                      print("XHR RESPONSE:", response.status,
-                            response.url[:200], flush=True)
+              print("AABNER HAVNSOE", flush=True)
+              page.goto(
+                  URL,
+                  wait_until="domcontentloaded",
+                  timeout=60000
+              )
 
-              page.on("request", log_request)
-              page.on("response", log_response)
-              page.on("pageerror", lambda e:
-                      print("JS ERROR:", str(e)[:500], flush=True))
-              page.on("console", lambda m:
-                      print("CONSOLE ERROR:", m.text[:400], flush=True)
-                      if m.type == "error" else None)
-
-              print("AABNER SIDEN", flush=True)
-              page.goto(URL, wait_until="domcontentloaded",
-                        timeout=60000)
-              page.locator(".mec-event-article").first.wait_for(
-                  timeout=30000)
+              # Vent paa at sidens JavaScript er klar.
+              page.wait_for_function(
+                  "() => typeof window.jQuery === 'function'",
+                  timeout=30000
+              )
               page.wait_for_timeout(10000)
 
-              def status():
-                  return page.evaluate("""() => ({
-                    events: document.querySelectorAll(
-                      '.mec-event-article').length,
-                    buttons: document.querySelectorAll(
-                      '.mec-load-more-button').length,
-                    jquery: typeof window.jQuery,
-                    mec: typeof window.mecdata,
-                    scripts: Array.from(document.scripts)
-                      .map(s => s.src)
-                      .filter(s => /mec|calendar/i.test(s))
-                      .slice(0, 12),
-                    button: (() => {
-                      const b = document.querySelector(
-                        '.mec-load-more-button');
-                      if (!b) return null;
-                      return {
-                        visible: !!b.getClientRects().length,
-                        classes: b.className,
-                        parent: b.parentElement?.outerHTML.slice(0, 900),
-                        jqueryEvents: window.jQuery
-                          ? Object.keys(
-                              window.jQuery._data(b, 'events') || {})
-                          : []
-                      };
-                    })()
-                  })""")
+              def count():
+                  return page.locator(
+                      ".mec-event-article"
+                  ).count()
 
-              import json
-              print("STATUS FOER:", json.dumps(
-                  status(), ensure_ascii=False), flush=True)
+              print("START ANTAL:", count(), flush=True)
 
-              print("TRYKKER SE FLERE", flush=True)
-              page.locator(".mec-load-more-button").first.click(
-                  timeout=15000)
-              page.wait_for_timeout(12000)
+              # Dette er kun en sikkerhedsgrænse mod
+              # uendelige loops, ikke et antal arrangementer.
+              for attempt in range(1, 101):
+                  button = page.locator(
+                      ".mec-load-more-button"
+                  ).first
 
-              print("STATUS EFTER:", json.dumps(
-                  status(), ensure_ascii=False), flush=True)
+                  if button.count() == 0 or not button.is_visible():
+                      print(
+                          "FAERDIG: Ingen synlig Se flere-knap.",
+                          flush=True
+                      )
+                      break
 
-              print("DIAGNOSE FAERDIG", flush=True)
+                  before = count()
+                  print(
+                      "KLIK", attempt,
+                      "- antal foer:", before,
+                      flush=True
+                  )
+
+                  responses = []
+
+                  def record(response):
+                      request = response.request
+                      if (
+                          "admin-ajax.php" in response.url
+                          and "mec_grid_load_more"
+                          in (request.post_data or "")
+                      ):
+                          responses.append(response)
+
+                  page.on("response", record)
+
+                  try:
+                      button.click(timeout=15000)
+                      deadline = time.monotonic() + 25
+
+                      while time.monotonic() < deadline:
+                          if count() > before:
+                              break
+                          if (
+                              button.count() == 0
+                              or not button.is_visible()
+                          ):
+                              break
+                          page.wait_for_timeout(500)
+
+                      page.wait_for_timeout(1000)
+
+                  finally:
+                      page.remove_listener("response", record)
+
+                  after = count()
+
+                  print(
+                      "ANTAL EFTER:", after,
+                      flush=True
+                  )
+                  print(
+                      "MEC SVAR:",
+                      [r.status for r in responses],
+                      flush=True
+                  )
+
+                  if after > before:
+                      continue
+
+                  if (
+                      button.count() == 0
+                      or not button.is_visible()
+                  ):
+                      print(
+                          "FAERDIG: Knappen er forsvundet.",
+                          flush=True
+                      )
+                      break
+
+                  print(
+                      "STOP: Ingen nye arrangementer. "
+                      "Kontrollerer om serveren meldte slut.",
+                      flush=True
+                  )
+
+                  for response in responses:
+                      try:
+                          body = response.text()
+                          print(
+                              "SVAR LAENGDE:", len(body),
+                              flush=True
+                          )
+                          print(
+                              "SVAR UDDRAG:",
+                              body[:500],
+                              flush=True
+                          )
+                      except Exception as e:
+                          print("SVAR FEJL:", str(e), flush=True)
+
+                  print(
+                      "USIKKER AFSLUTNING: "
+                      "Knappen er stadig synlig.",
+                      flush=True
+                  )
+                  break
+              else:
+                  raise RuntimeError(
+                      "Sikkerhedsgraense naaet."
+                  )
+
+              print("\n=== ALLE FUNDE ARRANGEMENTER ===")
+              for i, event in enumerate(
+                  page.locator(".mec-event-article").all(), 1
+              ):
+                  title = event.locator(
+                      ".mec-event-title"
+                  ).first
+
+                  print(
+                      i, "|",
+                      title.inner_text().strip()
+                      if title.count() else "(uden titel)",
+                      flush=True
+                  )
+
+              print(
+                  "\nTOTAL ANTAL:",
+                  count(),
+                  flush=True
+              )
+
               browser.close()
           PY
