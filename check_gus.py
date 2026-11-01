@@ -1,3 +1,4 @@
+
 import json
 import os
 import re
@@ -13,7 +14,7 @@ from playwright.sync_api import sync_playwright
 URL = "https://havnsoe.com/arrangementer/"
 TOPIC = os.environ.get("NTFY_TOPIC", "")
 STATE_FILE = Path("gus_state.json")
-VERSION = 2
+VERSION = 3
 
 MONTHS = {
     "januar": 1, "februar": 2, "marts": 3,
@@ -29,7 +30,6 @@ def clean(text):
 
 def get_date(text):
     text = clean(text).lower()
-
     match = re.search(
         r"(?<!\d)(\d{1,2})[./-](\d{1,2})[./-](20\d{2})(?!\d)",
         text
@@ -55,7 +55,6 @@ def get_date(text):
             return datetime(year, month, day).strftime("%Y-%m-%d")
         except ValueError:
             pass
-
     return None
 
 
@@ -63,27 +62,40 @@ def get_time(text):
     match = re.search(
         r"(?<!\d)(?:kl\.?\s*)?([01]?\d|2[0-3])"
         r"[:.]([0-5]\d)(?!\d)",
-        text,
-        re.I
+        text, re.I
     )
-    if match:
-        return f"{int(match.group(1)):02d}:{match.group(2)}"
-    return None
+    return (
+        f"{int(match.group(1)):02d}:{match.group(2)}"
+        if match else None
+    )
 
 
-def ticket_status(text):
-    if re.search(r"udsolgt|sold\s*out", text, re.I):
-        return "sold_out"
+def ticket_status(container):
+    # Læs særskilte statusmærker først.
+    badges = [
+        clean(node.get_text(" ", strip=True))
+        for node in container.select(
+            ".mec-event-title-soldout, "
+            ".mec-event-title .soldout, "
+            ".mec-event-title [class*='soldout']"
+        )
+    ]
+    badges = [label for label in badges if label]
 
-    if re.search(
-        r"køb\s*billet|sidste\s*par\s*billetter"
-        r"|billetter\s*tilgængelige",
-        text,
-        re.I
-    ):
-        return "available"
+    if badges:
+        return " | ".join(dict.fromkeys(badges))
 
-    return "unknown"
+    # Læs den faktiske tekst på billetknappen.
+    buttons = [
+        clean(node.get_text(" ", strip=True))
+        for node in container.select(".mec-booking-button")
+    ]
+    buttons = [label for label in buttons if label]
+
+    if buttons:
+        return " | ".join(dict.fromkeys(buttons))
+
+    return "Ikke angivet"
 
 
 def parse_events(html):
@@ -91,43 +103,34 @@ def parse_events(html):
     events = {}
 
     for container in soup.select(".mec-event-article"):
-        heading = container.select_one(
-            ".mec-event-title, h4"
-        )
+        heading = container.select_one(".mec-event-title, h4")
+
         if heading is None:
-            raise RuntimeError(
-                "Et arrangement mangler titel."
-            )
+            raise RuntimeError("Et arrangement mangler titel.")
 
-        title = clean(heading.get_text(" ", strip=True))
+        title_node = heading.select_one("a") or heading
+        title = clean(title_node.get_text(" ", strip=True))
+
         if not title:
-            raise RuntimeError(
-                "Et arrangement har en tom titel."
-            )
+            raise RuntimeError("Et arrangement har en tom titel.")
 
-        text = clean(container.get_text(" ", strip=True))
         link = heading.find("a", href=True)
         event_url = (
             urljoin(URL, link["href"])
             if link else URL
         )
 
-        event_date = get_date(title)
         date_element = container.select_one(
             ".mec-start-date-label, .mec-event-date"
         )
+        event_date = get_date(title)
 
         if event_date is None and date_element:
             event_date = get_date(
                 date_element.get_text(" ", strip=True)
             )
 
-        # Gem kun tidspunkt, hvis det tydeligt fremgår
-        # af arrangementets titel.
         event_time = get_time(title)
-
-        # Samme URL kan i visse tilfælde bruges til
-        # flere arrangementer. Titel skelner dem ad.
         key = event_url + "|" + title
 
         if key in events:
@@ -135,7 +138,7 @@ def parse_events(html):
                 "To arrangementer har samme nøgle: " + key
             )
 
-        status = ticket_status(text)
+        status = ticket_status(container)
 
         events[key] = {
             "title": title,
@@ -143,7 +146,12 @@ def parse_events(html):
             "date": event_date,
             "time": event_time,
             "status": status,
-            "available": status == "available"
+            "available": status.casefold() not in (
+                "udsolgt",
+                "sold out",
+                "se detaljer",
+                "ikke angivet"
+            )
         }
 
     return events
@@ -152,6 +160,7 @@ def parse_events(html):
 def get_events():
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
+
         try:
             page = browser.new_page(
                 viewport={"width": 390, "height": 844},
@@ -164,8 +173,6 @@ def get_events():
                 timeout=60000
             )
 
-            # Den tidligere diagnose viste, at MEC's
-            # klikfunktion først virkede efter ventetid.
             page.wait_for_function(
                 "() => typeof window.jQuery === 'function'",
                 timeout=30000
@@ -191,9 +198,7 @@ def get_events():
                 flush=True
             )
 
-            # Sikkerhedsgrænse mod uendelige loops.
-            # Det er IKKE et minimum eller maksimum
-            # for antallet af arrangementer.
+            # Fortsæt, indtil alle arrangementer er hentet.
             for attempt in range(1, 101):
                 if not button_visible():
                     print(
@@ -224,18 +229,14 @@ def get_events():
                     deadline = time.monotonic() + 25
 
                     while time.monotonic() < deadline:
-                        if count() > before:
-                            break
-                        if not button_visible():
+                        if count() > before or not button_visible():
                             break
                         page.wait_for_timeout(500)
 
                     page.wait_for_timeout(1000)
 
                 finally:
-                    page.remove_listener(
-                        "response", record
-                    )
+                    page.remove_listener("response", record)
 
                 after = count()
 
@@ -274,8 +275,6 @@ def get_events():
                     "Sikkerhedsgrænse for Se flere nået."
                 )
 
-            # Undersøg om sidens arrangementsområde findes,
-            # også hvis listen er tom.
             has_calendar = page.locator(
                 ".mec-event-article, .mec-wrap, "
                 ".mec-skin-grid-container, "
@@ -287,8 +286,7 @@ def get_events():
                     "Arrangementskalenderen blev ikke fundet."
                 )
 
-            html = page.content()
-            events = parse_events(html)
+            events = parse_events(page.content())
 
             print(
                 "Arrangementer hentet i alt:",
@@ -344,37 +342,40 @@ def compare_events(old, new):
     new_date = new.get("date")
 
     if old_date and new_date and old_date != new_date:
-        messages.append("Dato ændret")
+        messages.append(
+            f"Dato: {old_date} → {new_date}"
+        )
 
     old_time = old.get("time")
     new_time = new.get("time")
 
     if old_time and new_time and old_time != new_time:
-        messages.append("Tidspunkt ændret")
+        messages.append(
+            f"Tidspunkt: {old_time} → {new_time}"
+        )
 
-    old_status = old.get("status", "unknown")
-    new_status = new.get("status", "unknown")
+    old_status = old.get(
+        "status", "Ikke angivet"
+    )
+    new_status = new.get(
+        "status", "Ikke angivet"
+    )
 
     if old_status != new_status:
-        if new_status == "sold_out":
-            messages.append("Nu udsolgt")
-        elif new_status == "available":
-            messages.append("Billetter tilgængelige")
-        elif old_status != "unknown":
-            messages.append("Billetstatus ændret")
+        messages.append(
+            f"Billetstatus: {old_status} → {new_status}"
+        )
 
     return messages
 
 
 def main():
-    # Hent ALT først. Fejl her betyder, at den gamle
-    # tilstand ikke bliver overskrevet.
     current = get_events()
 
     if not STATE_FILE.exists():
         save_state(current)
         print(
-            "Første kontrol: alle arrangementer gemt "
+            "Første kontrol: arrangementer gemt "
             "uden notifikationer.",
             flush=True
         )
@@ -384,30 +385,27 @@ def main():
         STATE_FILE.read_text(encoding="utf-8")
     )
 
-    # Den gamle fil indeholder kun de første seks.
-    # Ved første kørsel af version 2 registrerer vi
-    # hele listen uden gamle notifikationer.
+    # Registrer status ved opgradering uden
+    # at sende notifikationer for eksisterende events.
     if (
         not isinstance(previous_data, dict)
         or previous_data.get("version") != VERSION
     ):
         save_state(current)
         print(
-            "Opgradering til version 2: "
-            "alle aktuelle arrangementer registreret "
-            "uden notifikationer.",
+            "Opgradering til version 3: billetstatus "
+            "registreret uden notifikationer.",
             flush=True
         )
         return
 
     previous = previous_data.get("events")
+
     if not isinstance(previous, dict):
         raise RuntimeError(
             "Ugyldigt format i gus_state.json."
         )
 
-    # Find samme arrangement, selv hvis titlen
-    # er ændret, når URL'en er entydig.
     old_by_url = {}
     for old in previous.values():
         old_by_url.setdefault(
@@ -439,28 +437,35 @@ def main():
         if old is None:
             notifications.append((
                 "Nyt saunagus",
-                event["title"],
+                event["title"]
+                + "\nBilletstatus: "
+                + event["status"],
                 event["url"]
             ))
             continue
 
-        for change in compare_events(old, event):
+        changes = compare_events(old, event)
+
+        if changes:
             notifications.append((
-                change,
-                event["title"],
+                "Saunagus ændret",
+                event["title"]
+                + "\n"
+                + "\n".join(changes),
                 event["url"]
             ))
 
-    # Kun gem ny tilstand, når alle notifikationer
-    # er sendt uden fejl.
     for title, message, url in notifications:
         notify(title, message, url)
         print(
-            "Notifikation sendt:", title, message,
+            "Notifikation sendt:",
+            title,
+            message.replace("\n", " | "),
             flush=True
         )
 
     save_state(current)
+
     print(
         "Kontrol gennemført. "
         f"{len(current)} arrangementer, "
