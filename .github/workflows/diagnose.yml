@@ -6,52 +6,83 @@ on:
 jobs:
   diagnose:
     runs-on: ubuntu-latest
+    timeout-minutes: 8
+
     steps:
-      - name: Undersoeg indlaesning
+      - name: Installer Playwright
+        run: |
+          python -m pip install playwright
+          python -m playwright install --with-deps chromium
+
+      - name: Test Se flere
         run: |
           python - <<'PY'
-          import requests
-          import re
-          from html import unescape
+          from playwright.sync_api import sync_playwright
 
-          url = "https://havnsoe.com/arrangementer/"
-          r = requests.get(
-              url,
-              headers={"User-Agent": "Mozilla/5.0"},
-              timeout=30
-          )
-          print("HTTP-status:", r.status_code)
-          r.raise_for_status()
-          html = r.text
-          print("HTML-stoerrelse:", len(html))
-          print("Antal mec-event-article:", html.count("mec-event-article"))
+          URL = "https://havnsoe.com/arrangementer/"
 
-          for pattern in [
-              "mec-load-more",
-              "mec-wrap",
-              "load-more",
-              "mec_ajax",
-              "ajaxurl",
-              "mec_list"
-          ]:
-              print("\n=== SOEGNING:", pattern, "===")
-              matches = list(re.finditer(
-                  re.escape(pattern), html, re.IGNORECASE
-              ))
-              print("Antal fund:", len(matches))
-              for match in matches[:4]:
-                  snippet = html[
-                      max(0, match.start()-350):
-                      min(len(html), match.end()+650)
-                  ]
-                  print(unescape(snippet).replace("\n", " ")[:1000])
-                  print("---")
+          with sync_playwright() as p:
+              browser = p.chromium.launch(headless=True)
+              page = browser.new_page(
+                  viewport={"width": 390, "height": 844},
+                  locale="da-DK"
+              )
 
-          print("\n=== JAVASCRIPT-FILER MED MEC ===")
-          for src in re.findall(
-              r'<script[^>]+src=["\']([^"\']+)',
-              html, re.IGNORECASE
-          ):
-              if "mec" in src.lower():
-                  print(unescape(src))
+              print("Aabner Havnsø...", flush=True)
+              page.goto(URL, wait_until="domcontentloaded", timeout=60000)
+              page.locator(".mec-event-article").first.wait_for(timeout=30000)
+
+              def count():
+                  return page.locator(".mec-event-article").count()
+
+              print("Foerste indlaesning:", count(), flush=True)
+
+              for attempt in range(1, 15):
+                  button = page.locator(".mec-load-more-button").first
+
+                  if button.count() == 0 or not button.is_visible():
+                      print("Ingen synlig Se flere-knap.", flush=True)
+                      break
+
+                  before = count()
+                  print("Trykker Se flere, gang", attempt, flush=True)
+
+                  try:
+                      button.click(timeout=15000)
+                      page.wait_for_function(
+                          """previous => document.querySelectorAll(
+                              '.mec-event-article'
+                          ).length > previous""",
+                          arg=before,
+                          timeout=15000
+                      )
+                  except Exception as error:
+                      print("Ingen nye arrangementer efter klik:", str(error)[:300], flush=True)
+                      break
+
+                  print("Antal arrangementer:", count(), flush=True)
+
+              print("\n=== ARRANGEMENTER ===", flush=True)
+              for number, event in enumerate(
+                  page.locator(".mec-event-article").all(), 1
+              ):
+                  title = event.locator(".mec-event-title").first
+                  date = event.locator(".mec-start-date-label").first
+                  print(
+                      number,
+                      "|",
+                      title.inner_text().strip() if title.count() else "(ingen titel)",
+                      "|",
+                      date.inner_text().strip() if date.count() else "(ingen dato)",
+                      flush=True
+                  )
+
+              print("\nTOTAL:", count(), flush=True)
+
+              if count() <= 6:
+                  raise RuntimeError(
+                      "Testen fandt ikke flere end de foerste 6 arrangementer."
+                  )
+
+              browser.close()
           PY
