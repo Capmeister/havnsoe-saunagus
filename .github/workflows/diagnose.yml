@@ -14,7 +14,7 @@ jobs:
           python -m pip install playwright
           python -m playwright install --with-deps chromium
 
-      - name: Test Se flere
+      - name: Undersoeg netvaerk og Se flere
         run: |
           python - <<'PY'
           from playwright.sync_api import sync_playwright
@@ -28,61 +28,107 @@ jobs:
                   locale="da-DK"
               )
 
-              print("Aabner Havnsø...", flush=True)
-              page.goto(URL, wait_until="domcontentloaded", timeout=60000)
-              page.locator(".mec-event-article").first.wait_for(timeout=30000)
+              def interesting(url):
+                  u = url.lower()
+                  return (
+                      "admin-ajax.php" in u
+                      or "wp-json" in u
+                      or "mec" in u
+                  )
 
-              def count():
-                  return page.locator(".mec-event-article").count()
-
-              print("Foerste indlaesning:", count(), flush=True)
-
-              for attempt in range(1, 15):
-                  button = page.locator(".mec-load-more-button").first
-
-                  if button.count() == 0 or not button.is_visible():
-                      print("Ingen synlig Se flere-knap.", flush=True)
-                      break
-
-                  before = count()
-                  print("Trykker Se flere, gang", attempt, flush=True)
-
-                  try:
-                      button.click(timeout=15000)
-                      page.wait_for_function(
-                          """previous => document.querySelectorAll(
-                              '.mec-event-article'
-                          ).length > previous""",
-                          arg=before,
-                          timeout=15000
+              def on_request(request):
+                  if interesting(request.url):
+                      print(
+                          "REQUEST:",
+                          request.method,
+                          request.url[:250],
+                          flush=True
                       )
-                  except Exception as error:
-                      print("Ingen nye arrangementer efter klik:", str(error)[:300], flush=True)
-                      break
+                      if request.method == "POST":
+                          print(
+                              "POST DATA:",
+                              str(request.post_data)[:1500],
+                              flush=True
+                          )
 
-                  print("Antal arrangementer:", count(), flush=True)
+              def on_response(response):
+                  if interesting(response.url):
+                      print(
+                          "RESPONSE:",
+                          response.status,
+                          response.url[:250],
+                          flush=True
+                      )
+                      if "admin-ajax.php" in response.url:
+                          try:
+                              print(
+                                  "RESPONSE BODY:",
+                                  response.text()[:2000],
+                                  flush=True
+                              )
+                          except Exception as e:
+                              print("BODY ERROR:", str(e), flush=True)
 
-              print("\n=== ARRANGEMENTER ===", flush=True)
-              for number, event in enumerate(
-                  page.locator(".mec-event-article").all(), 1
-              ):
-                  title = event.locator(".mec-event-title").first
-                  date = event.locator(".mec-start-date-label").first
-                  print(
-                      number,
-                      "|",
-                      title.inner_text().strip() if title.count() else "(ingen titel)",
-                      "|",
-                      date.inner_text().strip() if date.count() else "(ingen dato)",
+              page.on("request", on_request)
+              page.on("response", on_response)
+              page.on(
+                  "requestfailed",
+                  lambda r: print(
+                      "REQUEST FAILED:",
+                      r.url[:250],
+                      r.failure,
                       flush=True
                   )
+              )
+              page.on(
+                  "pageerror",
+                  lambda e: print("JAVASCRIPT ERROR:", str(e)[:500], flush=True)
+              )
+              page.on(
+                  "console",
+                  lambda m: print(
+                      "BROWSER CONSOLE:",
+                      m.type,
+                      m.text[:300],
+                      flush=True
+                  ) if m.type == "error" else None
+              )
 
-              print("\nTOTAL:", count(), flush=True)
+              print("Aabner Havnsø...", flush=True)
+              page.goto(
+                  URL,
+                  wait_until="domcontentloaded",
+                  timeout=60000
+              )
+              page.locator(
+                  ".mec-event-article"
+              ).first.wait_for(timeout=30000)
 
-              if count() <= 6:
-                  raise RuntimeError(
-                      "Testen fandt ikke flere end de foerste 6 arrangementer."
-                  )
+              count = lambda: page.locator(
+                  ".mec-event-article"
+              ).count()
 
+              print("ANTAL FOER:", count(), flush=True)
+
+              button = page.locator(
+                  ".mec-load-more-button"
+              ).first
+
+              print("KNAP FUNDET:", button.count(), flush=True)
+              print("KNAP SYNLIG:", button.is_visible(), flush=True)
+
+              print("TRYKKER SE FLERE...", flush=True)
+              button.click(timeout=15000)
+
+              page.wait_for_timeout(20000)
+
+              print("ANTAL EFTER:", count(), flush=True)
+              print(
+                  "KNAP HTML:",
+                  button.evaluate("(el) => el.outerHTML")[:1500],
+                  flush=True
+              )
+
+              print("DIAGNOSE FAERDIG", flush=True)
               browser.close()
           PY
