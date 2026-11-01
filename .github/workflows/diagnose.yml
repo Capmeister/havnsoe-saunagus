@@ -1,4 +1,4 @@
-name: Undersoeg alle Havnsø arrangementer
+name: Undersoeg billetstatus
 
 on:
   workflow_dispatch:
@@ -11,14 +11,16 @@ jobs:
     steps:
       - name: Installer Playwright
         run: |
-          python -m pip install playwright
+          python -m pip install playwright beautifulsoup4
           python -m playwright install --with-deps chromium
 
-      - name: Hent alle arrangementer
+      - name: Find billetstatus i HTML
         run: |
           python - <<'PY'
-          from playwright.sync_api import sync_playwright
+          import re
           import time
+          from bs4 import BeautifulSoup
+          from playwright.sync_api import sync_playwright
 
           URL = "https://havnsoe.com/arrangementer/"
 
@@ -29,21 +31,12 @@ jobs:
                   locale="da-DK"
               )
 
-              page.on(
-                  "pageerror",
-                  lambda e: print(
-                      "JS FEJL:", str(e)[:300], flush=True
-                  )
-              )
-
-              print("AABNER HAVNSOE", flush=True)
               page.goto(
                   URL,
                   wait_until="domcontentloaded",
                   timeout=60000
               )
 
-              # Vent paa at sidens JavaScript er klar.
               page.wait_for_function(
                   "() => typeof window.jQuery === 'function'",
                   timeout=30000
@@ -55,138 +48,83 @@ jobs:
                       ".mec-event-article"
                   ).count()
 
-              print("START ANTAL:", count(), flush=True)
-
-              # Dette er kun en sikkerhedsgrænse mod
-              # uendelige loops, ikke et antal arrangementer.
-              for attempt in range(1, 101):
+              for attempt in range(100):
                   button = page.locator(
                       ".mec-load-more-button"
                   ).first
 
                   if button.count() == 0 or not button.is_visible():
-                      print(
-                          "FAERDIG: Ingen synlig Se flere-knap.",
-                          flush=True
-                      )
                       break
 
                   before = count()
-                  print(
-                      "KLIK", attempt,
-                      "- antal foer:", before,
-                      flush=True
-                  )
+                  button.click(timeout=15000)
+                  deadline = time.monotonic() + 25
 
-                  responses = []
+                  while time.monotonic() < deadline:
+                      if count() > before:
+                          break
+                      if not button.is_visible():
+                          break
+                      page.wait_for_timeout(500)
 
-                  def record(response):
-                      request = response.request
-                      if (
-                          "admin-ajax.php" in response.url
-                          and "mec_grid_load_more"
-                          in (request.post_data or "")
-                      ):
-                          responses.append(response)
-
-                  page.on("response", record)
-
-                  try:
-                      button.click(timeout=15000)
-                      deadline = time.monotonic() + 25
-
-                      while time.monotonic() < deadline:
-                          if count() > before:
-                              break
-                          if (
-                              button.count() == 0
-                              or not button.is_visible()
-                          ):
-                              break
-                          page.wait_for_timeout(500)
-
-                      page.wait_for_timeout(1000)
-
-                  finally:
-                      page.remove_listener("response", record)
-
-                  after = count()
-
-                  print(
-                      "ANTAL EFTER:", after,
-                      flush=True
-                  )
-                  print(
-                      "MEC SVAR:",
-                      [r.status for r in responses],
-                      flush=True
-                  )
-
-                  if after > before:
-                      continue
-
-                  if (
-                      button.count() == 0
-                      or not button.is_visible()
-                  ):
-                      print(
-                          "FAERDIG: Knappen er forsvundet.",
-                          flush=True
+                  if count() == before and button.is_visible():
+                      raise RuntimeError(
+                          "Kunne ikke hente hele listen."
                       )
-                      break
-
-                  print(
-                      "STOP: Ingen nye arrangementer. "
-                      "Kontrollerer om serveren meldte slut.",
-                      flush=True
-                  )
-
-                  for response in responses:
-                      try:
-                          body = response.text()
-                          print(
-                              "SVAR LAENGDE:", len(body),
-                              flush=True
-                          )
-                          print(
-                              "SVAR UDDRAG:",
-                              body[:500],
-                              flush=True
-                          )
-                      except Exception as e:
-                          print("SVAR FEJL:", str(e), flush=True)
-
-                  print(
-                      "USIKKER AFSLUTNING: "
-                      "Knappen er stadig synlig.",
-                      flush=True
-                  )
-                  break
               else:
                   raise RuntimeError(
-                      "Sikkerhedsgraense naaet."
+                      "For mange Se flere-klik."
                   )
 
-              print("\n=== ALLE FUNDE ARRANGEMENTER ===")
-              for i, event in enumerate(
-                  page.locator(".mec-event-article").all(), 1
-              ):
-                  title = event.locator(
-                      ".mec-event-title"
-                  ).first
+              soup = BeautifulSoup(
+                  page.content(),
+                  "html.parser"
+              )
+
+              events = soup.select(".mec-event-article")
+              print("ANTAL ARRANGEMENTER:", len(events))
+
+              for number, event in enumerate(events, 1):
+                  heading = event.select_one(
+                      ".mec-event-title, h4"
+                  )
+                  title = (
+                      heading.get_text(" ", strip=True)
+                      if heading else "(uden titel)"
+                  )
 
                   print(
-                      i, "|",
-                      title.inner_text().strip()
-                      if title.count() else "(uden titel)",
+                      "\n=== ARRANGEMENT", number, "===",
+                      flush=True
+                  )
+                  print("TITEL:", title, flush=True)
+
+                  print("LINKS OG KNAPPER:", flush=True)
+                  for element in event.select(
+                      "a, button, [role=button], "
+                      "[class*=ticket], [class*=sold], "
+                      "[class*=billet], [class*=status]"
+                  ):
+                      text = element.get_text(
+                          " ", strip=True
+                      )
+                      if not text:
+                          continue
+
+                      print(
+                          "TAG:", element.name,
+                          "| CLASS:",
+                          " ".join(element.get("class", [])),
+                          "| TEKST:", text[:200],
+                          flush=True
+                      )
+
+                  print(
+                      "HELE ARRANGEMENTETS TEKST:",
+                      event.get_text(" ", strip=True)[:700],
                       flush=True
                   )
 
-              print(
-                  "\nTOTAL ANTAL:",
-                  count(),
-                  flush=True
-              )
-
+              print("\nDIAGNOSE FAERDIG")
               browser.close()
           PY
