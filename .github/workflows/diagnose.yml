@@ -1,0 +1,57 @@
+name: Undersoeg Havnsø arrangementer
+
+on:
+  workflow_dispatch:
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Undersoeg indlaesning
+        run: |
+          python - <<'PY'
+          import requests
+          import re
+          from html import unescape
+
+          url = "https://havnsoe.com/arrangementer/"
+          r = requests.get(
+              url,
+              headers={"User-Agent": "Mozilla/5.0"},
+              timeout=30
+          )
+          print("HTTP-status:", r.status_code)
+          r.raise_for_status()
+          html = r.text
+          print("HTML-stoerrelse:", len(html))
+          print("Antal mec-event-article:", html.count("mec-event-article"))
+
+          for pattern in [
+              "mec-load-more",
+              "mec-wrap",
+              "load-more",
+              "mec_ajax",
+              "ajaxurl",
+              "mec_list"
+          ]:
+              print("\n=== SOEGNING:", pattern, "===")
+              matches = list(re.finditer(
+                  re.escape(pattern), html, re.IGNORECASE
+              ))
+              print("Antal fund:", len(matches))
+              for match in matches[:4]:
+                  snippet = html[
+                      max(0, match.start()-350):
+                      min(len(html), match.end()+650)
+                  ]
+                  print(unescape(snippet).replace("\n", " ")[:1000])
+                  print("---")
+
+          print("\n=== JAVASCRIPT-FILER MED MEC ===")
+          for src in re.findall(
+              r'<script[^>]+src=["\']([^"\']+)',
+              html, re.IGNORECASE
+          ):
+              if "mec" in src.lower():
+                  print(unescape(src))
+          PY
