@@ -303,13 +303,15 @@ def notify(title, message, url):
     if not TOPIC:
         raise RuntimeError("NTFY_TOPIC mangler")
 
+    # JSON understøtter danske tegn i titler og beskeder.
     response = requests.post(
-        "https://ntfy.sh/" + TOPIC,
-        data=message.encode("utf-8"),
-        headers={
-            "Title": title,
-            "Click": url,
-            "Tags": "bell"
+        "https://ntfy.sh/",
+        json={
+            "topic": TOPIC,
+            "title": title,
+            "message": message,
+            "click": url,
+            "tags": ["bell"]
         },
         timeout=20
     )
