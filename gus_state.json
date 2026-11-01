@@ -1,38 +1,141 @@
 {
-  "https://havnsoe.com/events/pop-up-gus-12-01-2026-373-363-214-986-785-300/": {
-    "title": "Gustjeneste 01.11.2026",
-    "url": "https://havnsoe.com/events/pop-up-gus-12-01-2026-373-363-214-986-785-300/",
-    "available": false,
-    "date": "2026-11-01"
-  },
-  "https://havnsoe.com/events/338-779-774-718-787-476-827-417-882-888-318-830-772-582-536-931-546-927-640/": {
-    "title": "Nuka’s Velvære gus 04.11.2026",
-    "url": "https://havnsoe.com/events/338-779-774-718-787-476-827-417-882-888-318-830-772-582-536-931-546-927-640/",
-    "available": true,
-    "date": "2026-11-04"
-  },
-  "https://havnsoe.com/events/faelles-fyraften-06-02-2026-735-612-379-288-404-316-215/": {
-    "title": "Fælles Fyraften 06.11.2026 Udsolgt",
-    "url": "https://havnsoe.com/events/faelles-fyraften-06-02-2026-735-612-379-288-404-316-215/",
-    "available": false,
-    "date": "2026-11-06"
-  },
-  "https://havnsoe.com/events/338-779-774-718-787-703-242-223-453-572-159-691/": {
-    "title": "Saunagus 07.11.2026 Udsolgt",
-    "url": "https://havnsoe.com/events/338-779-774-718-787-703-242-223-453-572-159-691/",
-    "available": false,
-    "date": "2026-11-07"
-  },
-  "https://havnsoe.com/events/968-844-991-336-394-911-360/": {
-    "title": "Hyggegus m. Pandekager 08.11.2026 Hold 1 Udsolgt",
-    "url": "https://havnsoe.com/events/968-844-991-336-394-911-360/",
-    "available": false,
-    "date": "2026-11-08"
-  },
-  "https://havnsoe.com/events/388-706-919-992-599-240-820/": {
-    "title": "Hyggegus m. Pandekager 08.11.2026 Hold 2 Udsolgt",
-    "url": "https://havnsoe.com/events/388-706-919-992-599-240-820/",
-    "available": false,
-    "date": "2026-11-08"
+  "version": 2,
+  "events": {
+    "https://havnsoe.com/events/pop-up-gus-12-01-2026-373-363-214-986-785-300/|Gustjeneste 01.11.2026": {
+      "title": "Gustjeneste 01.11.2026",
+      "url": "https://havnsoe.com/events/pop-up-gus-12-01-2026-373-363-214-986-785-300/",
+      "date": "2026-11-01",
+      "time": "01:11",
+      "status": "unknown",
+      "available": false
+    },
+    "https://havnsoe.com/events/338-779-774-718-787-476-827-417-882-888-318-830-772-582-536-931-546-927-640/|Nuka’s Velvære gus 04.11.2026": {
+      "title": "Nuka’s Velvære gus 04.11.2026",
+      "url": "https://havnsoe.com/events/338-779-774-718-787-476-827-417-882-888-318-830-772-582-536-931-546-927-640/",
+      "date": "2026-11-04",
+      "time": "04:11",
+      "status": "available",
+      "available": true
+    },
+    "https://havnsoe.com/events/faelles-fyraften-06-02-2026-735-612-379-288-404-316-215/|Fælles Fyraften 06.11.2026 Udsolgt": {
+      "title": "Fælles Fyraften 06.11.2026 Udsolgt",
+      "url": "https://havnsoe.com/events/faelles-fyraften-06-02-2026-735-612-379-288-404-316-215/",
+      "date": "2026-11-06",
+      "time": "06:11",
+      "status": "sold_out",
+      "available": false
+    },
+    "https://havnsoe.com/events/338-779-774-718-787-703-242-223-453-572-159-691/|Saunagus 07.11.2026 Udsolgt": {
+      "title": "Saunagus 07.11.2026 Udsolgt",
+      "url": "https://havnsoe.com/events/338-779-774-718-787-703-242-223-453-572-159-691/",
+      "date": "2026-11-07",
+      "time": "07:11",
+      "status": "sold_out",
+      "available": false
+    },
+    "https://havnsoe.com/events/968-844-991-336-394-911-360/|Hyggegus m. Pandekager 08.11.2026 Hold 1 Udsolgt": {
+      "title": "Hyggegus m. Pandekager 08.11.2026 Hold 1 Udsolgt",
+      "url": "https://havnsoe.com/events/968-844-991-336-394-911-360/",
+      "date": "2026-11-08",
+      "time": "08:11",
+      "status": "sold_out",
+      "available": false
+    },
+    "https://havnsoe.com/events/388-706-919-992-599-240-820/|Hyggegus m. Pandekager 08.11.2026 Hold 2 Udsolgt": {
+      "title": "Hyggegus m. Pandekager 08.11.2026 Hold 2 Udsolgt",
+      "url": "https://havnsoe.com/events/388-706-919-992-599-240-820/",
+      "date": "2026-11-08",
+      "time": "08:11",
+      "status": "sold_out",
+      "available": false
+    },
+    "https://havnsoe.com/events/338-779-774-718-787-476-827-417-882-888-318-830-772-582-536-931-546-927-811/|Nuka’s Velvære gus 11.11.2026": {
+      "title": "Nuka’s Velvære gus 11.11.2026",
+      "url": "https://havnsoe.com/events/338-779-774-718-787-476-827-417-882-888-318-830-772-582-536-931-546-927-811/",
+      "date": "2026-11-11",
+      "time": "11:11",
+      "status": "available",
+      "available": true
+    },
+    "https://havnsoe.com/events/968-844-991-336-135-207-757-885-935-470-718-720-795-796-833-997-487-415/|Bjarne’s Godnat Pandekage Gus 12.11.2026 En Viking/Blues/Dansk. 8 runders Udsolgt": {
+      "title": "Bjarne’s Godnat Pandekage Gus 12.11.2026 En Viking/Blues/Dansk. 8 runders Udsolgt",
+      "url": "https://havnsoe.com/events/968-844-991-336-135-207-757-885-935-470-718-720-795-796-833-997-487-415/",
+      "date": "2026-11-12",
+      "time": "12:11",
+      "status": "sold_out",
+      "available": false
+    },
+    "https://havnsoe.com/events/576-787-475-790-337-886-474-212-257-803/|Fyraftensgus 13.11.2026": {
+      "title": "Fyraftensgus 13.11.2026",
+      "url": "https://havnsoe.com/events/576-787-475-790-337-886-474-212-257-803/",
+      "date": "2026-11-13",
+      "time": "13:11",
+      "status": "available",
+      "available": true
+    },
+    "https://havnsoe.com/events/699-427-469-577-253-330-689-984-908-533/|Marathon Gus 14.11.2026 Udsolgt": {
+      "title": "Marathon Gus 14.11.2026 Udsolgt",
+      "url": "https://havnsoe.com/events/699-427-469-577-253-330-689-984-908-533/",
+      "date": "2026-11-14",
+      "time": "14:11",
+      "status": "sold_out",
+      "available": false
+    },
+    "https://havnsoe.com/events/havfruegus-m-breathwork-28-12-2025-269-617-634-736-824-753-780-601-539-166-849-694/|Havfruens Breathwork + 5 runder Gus 15.11.2026": {
+      "title": "Havfruens Breathwork + 5 runder Gus 15.11.2026",
+      "url": "https://havnsoe.com/events/havfruegus-m-breathwork-28-12-2025-269-617-634-736-824-753-780-601-539-166-849-694/",
+      "date": "2026-11-15",
+      "time": "15:11",
+      "status": "available",
+      "available": true
+    },
+    "https://havnsoe.com/events/338-779-774-718-787-476-827-417-882-888-318-830-772-582-536-931-546-927-939/|Nuka’s Velvære gus 18.11.2026": {
+      "title": "Nuka’s Velvære gus 18.11.2026",
+      "url": "https://havnsoe.com/events/338-779-774-718-787-476-827-417-882-888-318-830-772-582-536-931-546-927-939/",
+      "date": "2026-11-18",
+      "time": "18:11",
+      "status": "available",
+      "available": true
+    },
+    "https://havnsoe.com/events/338-779-748-655-183-900-210-284-253-745/|Saunagus 20.11.2026 Ned i Tempo": {
+      "title": "Saunagus 20.11.2026 Ned i Tempo",
+      "url": "https://havnsoe.com/events/338-779-748-655-183-900-210-284-253-745/",
+      "date": "2026-11-20",
+      "time": "20:11",
+      "status": "available",
+      "available": true
+    },
+    "https://havnsoe.com/events/576-787-475-790-337-886-474-212-257-162/|Fyraftensgus 20.11.2026": {
+      "title": "Fyraftensgus 20.11.2026",
+      "url": "https://havnsoe.com/events/576-787-475-790-337-886-474-212-257-162/",
+      "date": "2026-11-20",
+      "time": "20:11",
+      "status": "available",
+      "available": true
+    },
+    "https://havnsoe.com/events/338-779-774-718-787-703-242-223-453-572-159-945/|Saunagus 21.11.2026": {
+      "title": "Saunagus 21.11.2026",
+      "url": "https://havnsoe.com/events/338-779-774-718-787-703-242-223-453-572-159-945/",
+      "date": "2026-11-21",
+      "time": "21:11",
+      "status": "available",
+      "available": true
+    },
+    "https://havnsoe.com/events/968-844-991-336-394-911-360-845/|Hyggegus m. Pandekager 22.11.2026 Hold 1": {
+      "title": "Hyggegus m. Pandekager 22.11.2026 Hold 1",
+      "url": "https://havnsoe.com/events/968-844-991-336-394-911-360-845/",
+      "date": "2026-11-22",
+      "time": "22:11",
+      "status": "available",
+      "available": true
+    },
+    "https://havnsoe.com/events/388-706-919-992-599-240-820-991/|Hyggegus m. Pandekager 22.11.2026 Hold 2": {
+      "title": "Hyggegus m. Pandekager 22.11.2026 Hold 2",
+      "url": "https://havnsoe.com/events/388-706-919-992-599-240-820-991/",
+      "date": "2026-11-22",
+      "time": "22:11",
+      "status": "available",
+      "available": true
+    }
   }
 }
