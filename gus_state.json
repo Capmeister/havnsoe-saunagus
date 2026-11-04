@@ -126,8 +126,8 @@
       "url": "https://havnsoe.com/events/388-706-919-992-599-240-820-991/",
       "date": "2026-11-22",
       "time": "22:11",
-      "status": "Køb billet",
-      "available": true
+      "status": "Udsolgt",
+      "available": false
     }
   }
 }
