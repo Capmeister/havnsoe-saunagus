@@ -1,22 +1,6 @@
 {
   "version": 3,
   "events": {
-    "https://havnsoe.com/events/968-844-991-336-394-911-360/|Hyggegus m. Pandekager 08.11.2026 Hold 1": {
-      "title": "Hyggegus m. Pandekager 08.11.2026 Hold 1",
-      "url": "https://havnsoe.com/events/968-844-991-336-394-911-360/",
-      "date": "2026-11-08",
-      "time": "08:11",
-      "status": "Se detaljer",
-      "available": false
-    },
-    "https://havnsoe.com/events/388-706-919-992-599-240-820/|Hyggegus m. Pandekager 08.11.2026 Hold 2": {
-      "title": "Hyggegus m. Pandekager 08.11.2026 Hold 2",
-      "url": "https://havnsoe.com/events/388-706-919-992-599-240-820/",
-      "date": "2026-11-08",
-      "time": "08:11",
-      "status": "Se detaljer",
-      "available": false
-    },
     "https://havnsoe.com/events/338-779-774-718-787-476-827-417-882-888-318-830-772-582-536-931-546-927-811/|Nuka’s Velvære gus 11.11.2026": {
       "title": "Nuka’s Velvære gus 11.11.2026",
       "url": "https://havnsoe.com/events/338-779-774-718-787-476-827-417-882-888-318-830-772-582-536-931-546-927-811/",
