@@ -10,6 +10,11 @@ on:
         type: boolean
         required: false
         default: false
+      special_0100:
+        description: 'Særlig kørsel kl. 01.00'
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: write
@@ -21,24 +26,30 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
 
     steps:
       - name: Test fejlalarm
         if: ${{ inputs.test_fejlalarm == true }}
         run: |
-          echo "TEST: Fremkalder en kontrolleret fejl"
+          echo "Dette er en test af fejlalarmen"
           exit 1
 
       - name: Kontroller dansk tid
         id: timecheck
         env:
           EVENT_NAME: ${{ github.event_name }}
+          SPECIAL_0100: ${{ inputs.special_0100 }}
         run: |
           HOUR=$(TZ=Europe/Copenhagen date +%H)
           echo "Dansk klokkeslæt: $HOUR"
+
           if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
             echo "run=true" >> "$GITHUB_OUTPUT"
+            if [ "$SPECIAL_0100" = "true" ]; then
+              echo "Særlig kørsel kl. 01.00"
+            else
+              echo "Manuel kørsel"
+            fi
           elif [ "$HOUR" -ge 1 ] && [ "$HOUR" -lt 6 ]; then
             echo "run=false" >> "$GITHUB_OUTPUT"
             echo "Natpause - ingen kontrol"
