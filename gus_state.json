@@ -112,6 +112,54 @@
       "time": "10:15",
       "status": "Køb billet",
       "available": true
+    },
+    "https://havnsoe.com/events/338-779-774-718-787-476-827-417-882-888-318-830-772-582-536-931-568-713-626/|Nuka’s Velvære gus 29.11.2026": {
+      "title": "Nuka’s Velvære gus 29.11.2026",
+      "url": "https://havnsoe.com/events/338-779-774-718-787-476-827-417-882-888-318-830-772-582-536-931-568-713-626/",
+      "date": "2026-11-29",
+      "time": "11:15",
+      "status": "Køb billet",
+      "available": true
+    },
+    "https://havnsoe.com/events/338-779-774-718-787-476-827-417-882-888-318-830-772-582-536-931-546-927-640-891-691/|Nuka’s Velvære gus 02.12.2026": {
+      "title": "Nuka’s Velvære gus 02.12.2026",
+      "url": "https://havnsoe.com/events/338-779-774-718-787-476-827-417-882-888-318-830-772-582-536-931-546-927-640-891-691/",
+      "date": "2026-12-02",
+      "time": "12:15",
+      "status": "Køb billet",
+      "available": true
+    },
+    "https://havnsoe.com/events/faelles-fyraften-06-02-2026-735-612-379-288-404-316-215-224/|Fælles Fyraften 04.12.2026": {
+      "title": "Fælles Fyraften 04.12.2026",
+      "url": "https://havnsoe.com/events/faelles-fyraften-06-02-2026-735-612-379-288-404-316-215-224/",
+      "date": "2026-12-04",
+      "time": "17:00",
+      "status": "Køb billet",
+      "available": true
+    },
+    "https://havnsoe.com/events/699-427-469-577-253-330-689-984-908-533-546/|Marathon Gus 05.12.2026": {
+      "title": "Marathon Gus 05.12.2026",
+      "url": "https://havnsoe.com/events/699-427-469-577-253-330-689-984-908-533-546/",
+      "date": "2026-12-05",
+      "time": "10:15",
+      "status": "Køb billet",
+      "available": true
+    },
+    "https://havnsoe.com/events/968-844-991-336-394-911-360-653/|Hyggegus m. Pandekager 06.12.2026 Hold 1": {
+      "title": "Hyggegus m. Pandekager 06.12.2026 Hold 1",
+      "url": "https://havnsoe.com/events/968-844-991-336-394-911-360-653/",
+      "date": "2026-12-06",
+      "time": "10:15",
+      "status": "Køb billet",
+      "available": true
+    },
+    "https://havnsoe.com/events/388-706-919-992-599-240-820-733/|Hyggegus m. Pandekager 06.12.2026 Hold 2": {
+      "title": "Hyggegus m. Pandekager 06.12.2026 Hold 2",
+      "url": "https://havnsoe.com/events/388-706-919-992-599-240-820-733/",
+      "date": "2026-12-06",
+      "time": "11:35",
+      "status": "Køb billet",
+      "available": true
     }
   }
 }
