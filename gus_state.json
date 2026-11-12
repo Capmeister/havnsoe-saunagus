@@ -80,6 +80,38 @@
       "time": "11:35",
       "status": "Udsolgt",
       "available": false
+    },
+    "https://havnsoe.com/events/338-779-774-718-787-476-827-417-882-888-318-830-772-582-536-931-546-927-640-891/|Nuka’s Velvære gus 25.11.2026": {
+      "title": "Nuka’s Velvære gus 25.11.2026",
+      "url": "https://havnsoe.com/events/338-779-774-718-787-476-827-417-882-888-318-830-772-582-536-931-546-927-640-891/",
+      "date": "2026-11-25",
+      "time": "12:15",
+      "status": "Køb billet",
+      "available": true
+    },
+    "https://havnsoe.com/events/338-779-748-655-183-900-210-284-253-745-639/|Saunagus 27.11.2026 Ned i Tempo": {
+      "title": "Saunagus 27.11.2026 Ned i Tempo",
+      "url": "https://havnsoe.com/events/338-779-748-655-183-900-210-284-253-745-639/",
+      "date": "2026-11-27",
+      "time": "12:30",
+      "status": "Køb billet",
+      "available": true
+    },
+    "https://havnsoe.com/events/576-787-475-790-145-686-957-950-516-845-833-387-917-407-791/|Fyraftensgus 27.11.2026": {
+      "title": "Fyraftensgus 27.11.2026",
+      "url": "https://havnsoe.com/events/576-787-475-790-145-686-957-950-516-845-833-387-917-407-791/",
+      "date": "2026-11-27",
+      "time": "17:00",
+      "status": "Køb billet",
+      "available": true
+    },
+    "https://havnsoe.com/events/699-427-469-577-253-330-689-984-908-533-952/|Marathon Gus 28.11.2026": {
+      "title": "Marathon Gus 28.11.2026",
+      "url": "https://havnsoe.com/events/699-427-469-577-253-330-689-984-908-533-952/",
+      "date": "2026-11-28",
+      "time": "10:15",
+      "status": "Køb billet",
+      "available": true
     }
   }
 }
