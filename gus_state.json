@@ -25,6 +25,14 @@
       "status": "Udsolgt",
       "available": false
     },
+    "https://havnsoe.com/events/godnat-nytaars-gus-m-pandekager-30-12-2025-479-806-823-336-482-943/|Godnat Gus 20.11.2026": {
+      "title": "Godnat Gus 20.11.2026",
+      "url": "https://havnsoe.com/events/godnat-nytaars-gus-m-pandekager-30-12-2025-479-806-823-336-482-943/",
+      "date": "2026-11-20",
+      "time": "22:15",
+      "status": "Køb billet",
+      "available": true
+    },
     "https://havnsoe.com/events/338-779-774-718-787-703-242-223-453-572-159-945/|Saunagus 21.11.2026": {
       "title": "Saunagus 21.11.2026",
       "url": "https://havnsoe.com/events/338-779-774-718-787-703-242-223-453-572-159-945/",
@@ -94,6 +102,14 @@
       "url": "https://havnsoe.com/events/338-779-774-718-787-476-827-417-882-888-318-830-772-582-536-931-546-927-640-891-691/",
       "date": "2026-12-02",
       "time": "12:15",
+      "status": "Køb billet",
+      "available": true
+    },
+    "https://havnsoe.com/events/338-779-748-655-183-900-210-284-253-745-407/|Saunagus 04.12.2026 Ned i Tempo": {
+      "title": "Saunagus 04.12.2026 Ned i Tempo",
+      "url": "https://havnsoe.com/events/338-779-748-655-183-900-210-284-253-745-407/",
+      "date": "2026-12-04",
+      "time": "12:30",
       "status": "Køb billet",
       "available": true
     },
