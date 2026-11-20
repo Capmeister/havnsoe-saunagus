@@ -1,30 +1,6 @@
 {
   "version": 3,
   "events": {
-    "https://havnsoe.com/events/338-779-748-655-183-900-210-284-253-745/|Saunagus 20.11.2026 Ned i Tempo": {
-      "title": "Saunagus 20.11.2026 Ned i Tempo",
-      "url": "https://havnsoe.com/events/338-779-748-655-183-900-210-284-253-745/",
-      "date": "2026-11-20",
-      "time": "12:30",
-      "status": "Se detaljer",
-      "available": false
-    },
-    "https://havnsoe.com/events/576-787-475-790-337-886-474-212-257-162/|Fyraftensgus 20.11.2026": {
-      "title": "Fyraftensgus 20.11.2026",
-      "url": "https://havnsoe.com/events/576-787-475-790-337-886-474-212-257-162/",
-      "date": "2026-11-20",
-      "time": "17:00",
-      "status": "Se detaljer",
-      "available": false
-    },
-    "https://havnsoe.com/events/godnat-nytaars-gus-m-pandekager-30-12-2025-479-806-823-336-482-943/|Godnat Gus 20.11.2026": {
-      "title": "Godnat Gus 20.11.2026",
-      "url": "https://havnsoe.com/events/godnat-nytaars-gus-m-pandekager-30-12-2025-479-806-823-336-482-943/",
-      "date": "2026-11-20",
-      "time": "22:15",
-      "status": "Se detaljer",
-      "available": false
-    },
     "https://havnsoe.com/events/338-779-774-718-787-703-242-223-453-572-159-945/|Saunagus 21.11.2026": {
       "title": "Saunagus 21.11.2026",
       "url": "https://havnsoe.com/events/338-779-774-718-787-703-242-223-453-572-159-945/",
