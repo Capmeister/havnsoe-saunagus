@@ -78,8 +78,8 @@
       "url": "https://havnsoe.com/events/faelles-fyraften-06-02-2026-735-612-379-288-404-316-215-224/",
       "date": "2026-12-04",
       "time": "17:00",
-      "status": "Køb billet",
-      "available": true
+      "status": "Udsolgt",
+      "available": false
     },
     "https://havnsoe.com/events/699-427-469-577-253-330-689-984-908-533-546/|Marathon Gus 05.12.2026": {
       "title": "Marathon Gus 05.12.2026",
